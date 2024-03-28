@@ -52,10 +52,17 @@
 </div>
 
 <br><br>
-<h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 📄 페이지별 기능(목업)</h2>
+<h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 📄 페이지별 기능</h2>
+<h3>초기 디자인</h3>
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/099d6efb-a1bd-4392-96f6-56a9fb6df88c">
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/11cb7def-1f05-4279-b79d-c1933ef80361">
-<img src="https://s5.ezgif.com/tmp/ezgif-5-4db6525dfa.gif" width="1000">
+
+<h3>메인 화면</h3>
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/af127c04-e0ff-49a7-baed-a03e8e8bf88b">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/2274c2d0-f38b-476a-ad62-59383328d5d1">
+
+<img src="https://s2.ezgif.com/tmp/ezgif-2-ec92482d37.gif">
+<img src="https://s5.ezgif.com/tmp/ezgif-5-f803a9d6e7.gif">
 
 
 
