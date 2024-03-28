@@ -52,6 +52,20 @@
 </div>
 
 <br><br>
+
+<h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🛠️ 브랜치 전략 </h2>
+<ul>
+  <li><strong>Git-flow</strong> 전략을 기반으로 main, develop 브랜치와 feature 보조 브랜치를 운용함
+  <ul>
+    <li><strong>main</strong> 브랜치는 배포 단계에서 사용하는 브랜치</li>
+    <li><strong>develop</strong> 브랜치는 개발 단계에서 git-flow의 master 역할을 하는 브랜치</li>
+    <li><strong>Feat</strong> 브랜치는 기능 단위로 독립적인 개발 환경을 위한 브랜치</li>
+  </ul>
+  </li>
+</ul>
+
+
+<br><br>
 <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 📄 페이지별 기능</h2>
 <h3>초기 디자인</h3>
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/099d6efb-a1bd-4392-96f6-56a9fb6df88c">
