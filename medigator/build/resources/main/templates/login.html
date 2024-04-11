@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>의료 대시보드</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 520px; /* 회원가입 페이지의 크기 기억 */
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-top: 20px; /* 로그인 버튼과의 간격 조정 */
+        }
+        h2 {
+            text-align: center; /* 가운데 정렬 */
+            font-size: 24px; /* 적당한 크기 조정 */
+            margin-bottom: 20px; /* 아래 여백 추가 */
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"],
+        input[type="button"] {
+            width: 100%; /* 가로 크기 조정 */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            margin-bottom: 15px; /* 간격 더욱 키우기 */
+        }
+        input[type="submit"],
+        input[type="button"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="submit"]:hover,
+        input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>로그인</h2>
+    <form action="/member/login" method="post">
+        <div>
+            <label for="memberId">아이디 :</label>
+            <input type="text" id="memberId" name="memberId">
+        </div>
+        <div>
+            <label for="memberPassword">비밀번호 :</label>
+            <input type="password" id="memberPassword" name="memberPassword">
+        </div>
+        <div>
+            <input type="submit" value="로그인">
+        </div>
+        <div>
+            <input type="button" value="회원가입" onclick="location.href='/member/join'">
+        </div>
+    </form>
+</div>
+</body>
+</html>
