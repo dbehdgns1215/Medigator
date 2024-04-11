@@ -75,8 +75,10 @@
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/af127c04-e0ff-49a7-baed-a03e8e8bf88b">
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/2274c2d0-f38b-476a-ad62-59383328d5d1">
 
-<img src="https://s2.ezgif.com/tmp/ezgif-2-ec92482d37.gif">
-<img src="https://s5.ezgif.com/tmp/ezgif-5-f803a9d6e7.gif">
+
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/460787fd-1888-4042-9468-8370f1f1f36a">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/c8d7674f-a676-4172-8114-0c5b92bedfcc">
+
 
 
 
