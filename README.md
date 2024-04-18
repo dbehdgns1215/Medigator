@@ -79,6 +79,14 @@
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/460787fd-1888-4042-9468-8370f1f1f36a">
 <img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/c8d7674f-a676-4172-8114-0c5b92bedfcc">
 
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/6fa6b238-7df5-46eb-a4ca-b4fd0d64baf9">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/e2fe6ed6-b35d-428b-9107-40ae0d294685">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/e1c69fe3-a5b5-4d0c-ac6c-59e855f7b53a">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/ac99b77b-4eab-4312-8bad-7615a06a3e90">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/448a915c-9c21-44cd-9ad3-16bbb62abd68">
+
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/d208371f-6074-47a2-a0a0-083706428b72">
+<img src="https://github.com/dbehdgns1215/Medigator/assets/77192122/1ef8b7a2-d756-4bca-9f21-f92f04724514">
 
 
 
