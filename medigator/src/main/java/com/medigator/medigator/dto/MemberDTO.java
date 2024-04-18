@@ -1,5 +1,6 @@
 package com.medigator.medigator.dto;
 
+import com.medigator.medigator.entity.MemberEntity;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,4 +20,15 @@ public class MemberDTO {
     private String memberEmail;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate memberBirth;
+
+    public static MemberDTO toMemberDTO(MemberEntity memberEntity) {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setId(memberEntity.getId());
+        memberDTO.setMemberId(memberEntity.getMemberId());
+        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
+        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
+        memberDTO.setMemberName(memberEntity.getMemberName());
+        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
+        return memberDTO;
+    }
 }

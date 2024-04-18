@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>의료 대시보드</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +58,9 @@
 <body>
 <div class="container">
     <h2>로그인</h2>
+    <div th:if="${errorMessage}" style="color:red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <form action="/member/login" method="post">
         <div>
             <label for="memberId">아이디 :</label>
@@ -73,4 +79,31 @@
     </form>
 </div>
 </body>
+<script>
+    $(document).ready(function(){
+        $("#loginForm").submit(function(event){
+            event.preventDefault(); // 폼 기본 제출 방지
+            $.ajax({
+                type: "POST",
+                url: "/member/login",
+                data: {
+                    memberId: $("#memberId").val(),
+                    memberPassword: $("#memberPassword").val()
+                },
+                success: function(response){
+                    if(response.success) {
+                        window.location.href = "/";
+                    } else {
+                        $("#errorMessage").text(response.message);
+                    }
+                },
+                error: function(xhr, status, error){
+                    // 서버 에러 처리
+                    $("#errorMessage").text("서버 오류가 발생했습니다.");
+                }
+            });
+        });
+    });
+</script>
+
 </html>
