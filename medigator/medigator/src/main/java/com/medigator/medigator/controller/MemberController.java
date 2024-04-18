@@ -1,11 +1,13 @@
 package com.medigator.medigator.controller;
 
 import com.medigator.medigator.dto.MemberDTO;
+import com.medigator.medigator.service.LoginResponse;
 import com.medigator.medigator.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.LocalDate;
@@ -36,13 +38,14 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
-        MemberDTO loginResult = memberService.login(memberDTO);
-        if (loginResult != null) {
-            session.setAttribute("loginId", loginResult.getMemberId());
-            return  "index";
+    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session, RedirectAttributes redirectAttributes) {
+        LoginResponse loginResult = memberService.login(memberDTO);
+        if (loginResult.isSuccess()) {
+            session.setAttribute("loginId", loginResult.getMemberDTO().getMemberId());
+            return "redirect:/";
         } else {
-            return "join";
+            redirectAttributes.addFlashAttribute("errorMessage", loginResult.getMessage());
+            return "redirect:/member/login";
         }
     }
 
@@ -51,6 +54,7 @@ public class MemberController {
         session.invalidate();
         return "index";
     }
+
 
     @PostMapping("/member/id-check")
     public @ResponseBody String idCheck (@RequestParam("memberId") String memberId) {

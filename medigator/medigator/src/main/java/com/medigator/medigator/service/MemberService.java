@@ -23,26 +23,21 @@ public class MemberService {
         memberRepository.save(memeberEntity);
     }
 
-    public MemberDTO login(MemberDTO memberDTO) {
-        // 아이디로 DB 조회 -> DB에서 비밀번호 가져와서 입력한 비밀번호와 일치하는지 판별.
+    public LoginResponse login(MemberDTO memberDTO) {
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
         if (byMemberId.isPresent()) {
-            // 조회 성공
             MemberEntity memberEntity = byMemberId.get();
             if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())) {
-                // 비밀번호 일치
-                // Entity 객체 -> DTO 객체 (변환)
                 MemberDTO dto = MemberDTO.toMemberDTO(memberEntity);
-                return dto;
+                return new LoginResponse(true, "로그인 성공", dto);
             } else {
-                // 비밀번호 불일치
-                return null;
+                return new LoginResponse(false, "비밀번호가 틀렸습니다.", null);
             }
         } else {
-            // 조회 실패
-            return null;
+            return new LoginResponse(false, "존재하지 않는 아이디입니다.", null);
         }
     }
+
 
     public String idCheck(String memberId) {
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberId);
