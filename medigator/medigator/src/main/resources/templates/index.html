@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>의료 대시보드</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: margin-left 0.5s; /* 본문 이동 효과 추가 */
+        }
+        .menu-bar {
+            width: 250px; /* 메뉴 바의 기본 너비를 지정 */
+            height: 100%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: -250px; /* 메뉴 바를 화면 왼쪽 바깥으로 이동시켜 숨깁니다 */
+            background-color: white;
+            overflow-x: hidden;
+            transition: left 0.5s; /* 'left' 속성을 이용한 애니메이션 적용 */
+            padding-top: 60px;
+        }
+        .menu-bar a, .menu-btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 25px;
+            color: black;
+            display: block;
+            transition: 0.3s;
+        }
+        .menu-btn {
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            padding: 15px; /* 메뉴 버튼의 패딩 조정 */
+        }
+        .menu-bar a:hover, .menu-btn:hover {
+            color: #f1f1f1;
+        }
+        .dashboard-section {
+            border: 1px solid #ddd;
+            margin: 10px;
+            margin-top: 35px;
+            padding: 30px;
+            flex-basis: calc(50% - 20px);
+            box-sizing: border-box;
+        }
+       .nav-bar {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 35px;
+        z-index: 9999;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하여 nav-bar가 더 돋보이도록 합니다. */
+    }
+    </style>
+</head>
+<body>
+<div class="nav-bar" id="navBar" th:if="${session.loginId}">
+    <p><span th:text="${session.loginId}"></span>님, 환영합니다.</p>
+</div>
+
+<div class="menu-bar" id="menuBar" onmouseleave="closeMenu()">
+    <span class="menu-btn" onclick="toggleMenu()">☰ 메뉴</span>
+    <!-- 세션에 로그인 정보가 있는 경우 -->
+    <th:block th:if="${session.loginId}">
+        <a href="#">대시보드</a>
+        <a href="/member/logout">로그아웃</a> <!-- 로그아웃 링크 추가 -->
+        <a href="/member/mypage">마이페이지</a>
+        <a href="#" onclick="closeMenu()">X</a>
+    </th:block>
+    <!-- 세션에 로그인 정보가 없는 경우 -->
+    <th:block th:unless="${session.loginId}">
+        <a href="#">대시보드</a>
+        <a href="/member/login">로그인</a> <!-- 로그인 링크 추가 -->
+        <a href="#" onclick="closeMenu()">X</a>
+    </th:block>
+</div>
+
+
+<div class="dashboard-section interaction-visualization">
+    <h2>약물간의 상호작용</h2>
+    <!-- 선 시각화 예시 -->
+    <div>빨강: 위험</div>
+    <div>노랑: 주의</div>
+    <div>초록: 안전</div>
+</div>
+
+<div class="dashboard-section news-crawling">
+    <h2>최신 의료 뉴스</h2>
+    <p>여기에 최신 의료 뉴스가 표시됩니다.</p>
+</div>
+
+<div class="dashboard-section drug-list">
+    <h2>내가 등록한 약물 리스트</h2>
+    <!-- 약물 리스트 예시 -->
+    <ul>
+        <li>약물 A</li>
+        <li>약물 B</li>
+        <li>약물 C</li>
+    </ul>
+</div>
+
+<div class="dashboard-section empty-space half-width">
+    <form id="searchForm">
+        <input type="text" id="entpName" placeholder="회사명으로 검색">
+        <input type="text" id="itemName" placeholder="약품명으로 검색">
+        <button type="submit">검색</button>
+    </form>
+    <button id="nextPage">다음 페이지</button>
+    <button id="prevPage">이전 페이지</button>
+    <ol id="drugList"></ol>
+
+    <script src="xml2json.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            let currentPageNo = 1; // 현재 페이지 번호
+            const numOfRows = 3; // 페이지 당 표시할 항목 수
+
+            function updatePaginationButtons(totalCount) {
+                $("#prevPage").toggle(currentPageNo > 1);
+                $("#nextPage").toggle(currentPageNo < Math.ceil(totalCount / numOfRows));
+            }
+            function searchDrugs(pageNo) {
+                const entpName = $("#entpName").val();
+                const itemName = $("#itemName").val();
+
+                $.ajax({
+                    method: "GET",
+                    url: "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList",
+                    data: {
+                        serviceKey: "b+gZfgfN+HH+duTxDk+pgGHcRLu3E1RxHx/PjuL4xPp9OeHZIVmYTA0XID3lNEQXiACvRAy+80kEc6yqJW+LBA==",
+                        entpName: entpName,
+                        itemName: itemName,
+                        pageNo: pageNo,
+                        numOfRows: numOfRows,
+                        type: "json" // 여기를 추가하거나 수정하여 응답 형식을 JSON으로 지정합니다.
+                    },
+                    dataType: "json" // 응답을 JSON 형식으로 받겠다고 명시합니다.
+                })
+                    .done(function(response) {
+                        var items = response.body.items; // 'items' 배열에 직접 접근
+                        $("#drugList").empty(); // 기존 목록을 비웁니다.
+
+                        $.each(items, function(i, item) {
+                            // 각 항목의 상세 정보를 변수에 저장합니다.
+                            var entpName = item.entpName; // 제조사 이름
+                            var itemName = item.itemName; // 약품명
+                            var atpnQesitm = item.atpnQesitm; // 주의사항
+                            var efcyQesitm = item.efcyQesitm; // 효능
+                            var useMethodQesitm = item.useMethodQesitm; // 사용방법
+
+                            // HTML 리스트에 항목을 추가합니다.
+                            var listItem = "<li><strong>제조사:</strong> " + entpName +
+                                "<br><strong>약품명:</strong> " + itemName +
+                                "<br><strong>효능:</strong> " + efcyQesitm +
+                                "<br><strong>주의사항:</strong> " + atpnQesitm +
+                                "<br><strong>사용방법:</strong> " + useMethodQesitm + "</li><br><br>";
+
+                            $("#drugList").append(listItem);
+                        });
+                        // 페이지네이션 관련 처리...
+                        const totalCount = response.response.body.totalCount;
+                        updatePaginationButtons(totalCount); // 페이지네이션 버튼 상태 업데이트
+                    });
+            }
+
+            // 검색 폼 제출 이벤트
+            $("#searchForm").submit(function(event) {
+                event.preventDefault(); // 기본 동작 방지
+                currentPageNo = 1; // 검색 시 항상 첫 페이지부터 시작
+                searchDrugs(currentPageNo); // 검색 함수 호출
+            });
+
+            // 이전 페이지 버튼 클릭 이벤트
+            $("#prevPage").click(function(event) {
+                event.preventDefault(); // 버튼의 기본 동작 방지
+                if (currentPageNo > 1) {
+                    currentPageNo--; // 페이지 번호 감소
+                    searchDrugs(currentPageNo); // 이전 페이지의 검색 결과 표시
+                }
+            });
+
+            // 다음 페이지 버튼 클릭 이벤트
+            $("#nextPage").click(function(event) {
+                event.preventDefault(); // 버튼의 기본 동작 방지
+                currentPageNo++; // 페이지 번호 증가
+                searchDrugs(currentPageNo); // 다음 페이지의 검색 결과 표시
+            });
+
+            // 처음 로딩 시 검색 결과 표시
+            searchDrugs(currentPageNo);
+        });
+    </script>
+
+</div>
+
+<div class="dashboard-section disease-content half-width">
+    <h2>질병 관련 콘텐츠</h2>
+    <!-- 블로그 글이나 유튜브 영상 예시 -->
+    <p>여기에 질병 관련 콘텐츠가 표시됩니다.</p>
+</div>
+
+<div class="dashboard-section drug-interaction-warning">
+    <h2>특정 약물과의 위험성</h2>
+    <!-- 약물 복용시 주의사항 예시 -->
+    <div onmouseover="showWarning('약물 A')" onmouseout="hideWarning()">약물 A</div>
+    <p id="warningText" style="display:none;">주의: 약물 A를 복용할 때 주의사항입니다.</p>
+</div>
+
+<script>
+    function openMenu() {
+        document.getElementById("menuBar").style.left = "0px";
+        document.body.style.marginLeft = "250px"; // 본문 내용을 오른쪽으로 이동
+    }
+    function closeMenu() {
+        document.getElementById("menuBar").style.left = "-250px";
+        document.body.style.marginLeft = "0"; // 본문 내용을 원래 위치로 이동
+    }
+
+    function showWarning(drug) {
+        var warningText = document.getElementById("warningText");
+        if (drug === "약물 A") {
+            warningText.innerHTML = "주의: 약물 A를 복용할 때 주의사항입니다.";
+        }
+        // 여기에 다른 약물의 주의사항을 추가할 수 있습니다.
+        warningText.style.display = "block";
+    }
+    function toggleMenu() {
+        var menuBar = document.getElementById("menuBar");
+        var computedStyle = window.getComputedStyle(menuBar);
+        var menuBarLeft = computedStyle.getPropertyValue("left");
+        if (menuBarLeft === "-250px" || menuBarLeft === "0px") {
+            menuBar.style.left = "250px"; // 메뉴 바를 화면으로 이동시킵니다
+            document.body.style.marginLeft = "250px"; // 본문 내용을 오른쪽으로 이동
+        } else {
+            menuBar.style.left = "-250px"; // 메뉴 바를 다시 화면 왼쪽 바깥으로 이동시킵니다
+            document.body.style.marginLeft = "0"; // 본문 내용을 원래 위치로 이동
+        }
+    }
+    function hideWarning() {
+        document.getElementById("warningText").style.display = "none";
+    }
+
+    // 왼쪽 끝으로 마우스가 이동했을 때 메뉴가 나타나도록 설정
+    document.addEventListener("mousemove", function(event) {
+        if (event.clientX < 10) {
+            openMenu();
+        }
+    });
+</script>
+
+</body>
+</html>
