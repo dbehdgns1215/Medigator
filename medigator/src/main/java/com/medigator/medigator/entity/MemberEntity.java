@@ -1,5 +1,6 @@
 package com.medigator.medigator.entity;
 
+import com.medigator.medigator.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class MemberEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String memberId;
 
     @Column
@@ -31,4 +32,14 @@ public class MemberEntity {
 
     @Column
     private LocalDate memberBirth;
+
+    public static MemberEntity toMemeberEntity(MemberDTO memberDTO) {
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setMemberId(memberDTO.getMemberId());
+        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
+        memberEntity.setMemberName(memberDTO.getMemberName());
+        memberEntity.setMemberEmail(memberDTO.getMemberEmail());
+        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
+        return  memberEntity;
+    }
 }

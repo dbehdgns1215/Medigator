@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>의료 대시보드</title>
+    <!-- Jquery cdn -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,11 +109,18 @@
     <form action="/member/join" method="post">
         <div>
             <label for="memberId">아이디 :</label>
-            <input type="text" id="memberId" name="memberId"> <br>
+            <input type="text" id="memberId" name="memberId" onkeyup="idCheck()"> <br>
+            <span id="check-result" style="display: block; margin-top: -15px;"></span>
+            <br>
         </div>
         <div>
             <label for="memberPassword">비밀번호 :</label>
             <input type="password" id="memberPassword" name="memberPassword"> <br>
+        </div>
+        <div>
+            <label for="memberPasswordConfirm">비밀번호 확인:</label>
+            <input type="password" id="memberPasswordConfirm" name="memberPasswordConfirm" onkeyup="validateForm()"> <br>
+            <span id="password-match-error" class="error-message" style="display: none; margin-top: -15px;">비밀번호가 일치하지 않습니다.</span> <!-- 수정된 부분 -->
         </div>
         <div>
             <label for="memberName">이름 :</label>
@@ -118,7 +130,7 @@
         <label for="memberEmail">이메일 :</label>
         <div class="flex-row">
             <div class="email-input">
-                <input class="box" id="memberEmail" type="text"/>
+                <input class="box" id="memberEmail" type="text" onblur="emailCheck()">
                 <div class="at-symbol">@</div>
                 <input class="box" id="memberDomainInput" type="text" placeholder=""/>
                 <div class="domain-container">
@@ -133,6 +145,8 @@
                 </div>
             </div>
         </div>
+        <span id="email-check-result" style="display: block; margin-top: -55px; margin-bottom: 30px;"></span>
+
 
         <div class="flex-row info" id="memberBirth">
             <select class="box" id="memberBirthYear">
@@ -149,6 +163,83 @@
     </form>
 </div>
 </body>
+<script th:inline="javascript">
+    const idCheck = () => {
+        const id = document.getElementById("memberId").value;
+        const checkResult = document.getElementById("check-result");
+        console.log("입력값 : ", id);
+        $.ajax({
+            // 요청 방식: post, url: "/member/id-check", 데이터: 아이디
+            type: "post",
+            url: "/member/id-check",
+            data: {
+                "memberId": id
+            },
+            success: function(res) {
+                console.log("요청 성공", res);
+                if (res == "ok") {
+                    console.log("사용가능한 아이디입니다.");
+                    checkResult.innerHTML = "사용가능한 아이디 입니다.";
+                } else {
+                    console.log("이미 사용중인 아이디 입니다.");
+                    checkResult.innerHTML = "이미 사용중인 아이디 입니다.";
+                }
+            },
+            error: function(err) {
+                console.log("에러 발생", err);
+            }
+        });
+    }
+</script>
+
+<!-- 비밀번호 확인 -->
+<script th:inline="javascript">
+    const validateForm = () => {
+        const password = document.getElementById('memberPassword').value;
+        const confirmPassword = document.getElementById('memberPasswordConfirm').value;
+        const passwordMatchResult = document.getElementById('password-match-error'); // 수정된 부분
+
+        if (password !== confirmPassword) {
+        console.log("비밀번호가 올바르지 않습니다. ");
+            passwordMatchResult.style.display = "block"; // 수정된 부분
+            return false; // 폼 제출을 중지
+        } else {
+            console.log("비밀번호 사용 가능");
+            passwordMatchResult.style.display = "none"; // 수정된 부분
+            return true; // 폼 제출 진행
+        }
+    }
+</script>
+
+<!-- 이메일 중복 처리 -->
+<script th:inline="javascript">
+    const emailCheck = () => {
+        const email = document.getElementById("memberEmail").value;
+        const checkResult = document.getElementById("email-check-result");
+        console.log("입력된 이메일: ", email);
+        $.ajax({
+            type: "post",
+            url: "/member/email-check",
+            data: {
+                "memberEmail": email
+            },
+            success: function(res) {
+                console.log("요청 성공", res);
+                if (res === "ok") {
+                    console.log("사용 가능한 이메일입니다.");
+                    checkResult.innerHTML = "사용 가능한 이메일입니다.";
+                } else {
+                    console.log("이미 사용 중인 이메일입니다.");
+                    checkResult.innerHTML = "이미 사용 중인 이메일입니다.";
+                }
+            },
+            error: function(err) {
+                console.log("에러 발생", err);
+            }
+        });
+    }
+</script>
+
 
 <!-- 도메인 선택시에 잠금 처리 -->
 <script>

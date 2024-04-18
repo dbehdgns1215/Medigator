@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -49,21 +49,44 @@
         .dashboard-section {
             border: 1px solid #ddd;
             margin: 10px;
-            padding: 20px;
+            margin-top: 35px;
+            padding: 30px;
             flex-basis: calc(50% - 20px);
             box-sizing: border-box;
         }
+       .nav-bar {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 35px;
+        z-index: 9999;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하여 nav-bar가 더 돋보이도록 합니다. */
+    }
     </style>
 </head>
 <body>
+<div class="nav-bar" id="navBar" th:if="${session.loginId}">
+    <p><span th:text="${session.loginId}"></span>님, 환영합니다.</p>
+</div>
 
 <div class="menu-bar" id="menuBar" onmouseleave="closeMenu()">
     <span class="menu-btn" onclick="toggleMenu()">☰ 메뉴</span>
-    <a href="#">대시보드</a>
-    <a href="/member/login">로그인</a>
-    <a href="/member/mypage">마이페이지</a>
-    <a href="#" onclick="closeMenu()">X</a>
+    <!-- 세션에 로그인 정보가 있는 경우 -->
+    <th:block th:if="${session.loginId}">
+        <a href="#">대시보드</a>
+        <a href="/member/logout">로그아웃</a> <!-- 로그아웃 링크 추가 -->
+        <a href="/member/mypage">마이페이지</a>
+        <a href="#" onclick="closeMenu()">X</a>
+    </th:block>
+    <!-- 세션에 로그인 정보가 없는 경우 -->
+    <th:block th:unless="${session.loginId}">
+        <a href="#">대시보드</a>
+        <a href="/member/login">로그인</a> <!-- 로그인 링크 추가 -->
+        <a href="#" onclick="closeMenu()">X</a>
+    </th:block>
 </div>
+
 
 <div class="dashboard-section interaction-visualization">
     <h2>약물간의 상호작용</h2>
@@ -75,7 +98,6 @@
 
 <div class="dashboard-section news-crawling">
     <h2>최신 의료 뉴스</h2>
-    <!-- 뉴스 크롤링 결과 예시 -->
     <p>여기에 최신 의료 뉴스가 표시됩니다.</p>
 </div>
 
@@ -100,7 +122,8 @@
     <ol id="drugList"></ol>
 
     <script src="xml2json.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
             let currentPageNo = 1; // 현재 페이지 번호
